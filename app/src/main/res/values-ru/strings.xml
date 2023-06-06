@@ -2,4 +2,10 @@
 <resources>
     <string name="app_name">Моё домашнее задание первое</string>
     <string name="nm">НМедиа!</string>
+    <string name="description_post_menu">Меню публикации</string>
+    <string name="description_post_author_avatar">Аватар автора сообщения</string>
+    <string name="description_post_likes">Лайки поста</string>
+    <string name="description_post_views">Просмотры поста</string>
+    <string name="description_post_reposts">Репосты поста</string>
+
 </resources>
