@@ -8,15 +8,6 @@
     tools:context=".MainActivity">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nm"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/posts_avatar_size"
@@ -131,7 +122,8 @@
         android:layout_marginTop="@dimen/common_spacing"
         app:layout_constraintStart_toEndOf="@id/repost"
         app:layout_constraintTop_toTopOf="@+id/barrier2"
-        tools:text="@sample/posts.json/data/reposts" />
+        tools:text="@string/description_post_reposts"/>
+
 
     <ImageButton
         android:id="@+id/views"

@@ -28,15 +28,20 @@ class MainActivity : AppCompatActivity() {
             if (post.likedByMe) {
                 like.setImageResource(R.drawable.ic_baseline_favorite_border_24)
             }
-            countLikes.text = post.likes.toString()
+            countLikes.text = formatNumber(post.likes)
+            countReposts.text = formatNumber(post.reposts)
 
             root.setOnClickListener {
                 Log.d("stuff", "stuff")
             }
 
-            avatar.setOnClickListener {
-                Log.d("stuff", "avatar")
-            }
+            /* avatar.setOnClickListener {
+            Log.d("stuff", "avatar")
+        }
+        menu.setOnClickListener{
+            Log.d("stuff", "menu")
+        }*/
+
 
             like.setOnClickListener {
                 Log.d("stuff", "like")
@@ -70,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                     "$integer" + "K"
                 }
             }
+
             number < 1000000 -> (number / 1000).toString() + "K"
             else -> {
                 val integer = number / 1000000

@@ -8,5 +8,5 @@ data class Post(
     var likes: Int = 0,
     var reposts: Int = 0,
     var likedByMe: Boolean = false,
-    var repostByMe : Boolean = false
+    var repostByMe : Boolean = true
 )
