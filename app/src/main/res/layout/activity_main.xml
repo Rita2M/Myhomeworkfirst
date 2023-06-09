@@ -92,7 +92,7 @@
         app:constraint_referenced_ids="content" />
 
     <ImageButton
-        android:id="@+id/likes"
+        android:id="@+id/like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_spacing"
@@ -107,12 +107,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
         android:layout_marginTop="@dimen/common_spacing"
-        app:layout_constraintStart_toEndOf="@id/likes"
+        app:layout_constraintStart_toEndOf="@id/like"
         app:layout_constraintTop_toBottomOf="@id/barrier2"
         tools:text="@sample/posts.json/data/likes" />
 
     <ImageButton
-        android:id="@+id/reposts"
+        android:id="@+id/repost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
@@ -129,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
         android:layout_marginTop="@dimen/common_spacing"
-        app:layout_constraintStart_toEndOf="@id/reposts"
+        app:layout_constraintStart_toEndOf="@id/repost"
         app:layout_constraintTop_toTopOf="@+id/barrier2"
         tools:text="@sample/posts.json/data/reposts" />
 
