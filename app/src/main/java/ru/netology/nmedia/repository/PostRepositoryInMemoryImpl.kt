@@ -13,7 +13,7 @@ class PostRepositoryInMemoryImpl: PostRepository {
         likes = 0,
         reposts = 0,
         likedByMe = false,
-        repostByMe = true
+        repostByMe = false
     )
     private val data = MutableLiveData(post)
     override fun get() = data
@@ -24,7 +24,7 @@ class PostRepositoryInMemoryImpl: PostRepository {
     }
 
     override fun repost() {
-        post = post.copy( reposts = post.reposts + 1 )
+        post = post.copy( reposts = post.reposts + 1, repostByMe = true )
         data.value = post
     }
 }
