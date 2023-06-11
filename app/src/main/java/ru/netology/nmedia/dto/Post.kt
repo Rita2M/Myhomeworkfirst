@@ -8,5 +8,5 @@ data class Post(
     val likes: Int = 0,
     val reposts: Int = 0,
     val likedByMe: Boolean = false,
-    val repostByMe : Boolean = true
+    val repostByMe : Boolean = false
 )
