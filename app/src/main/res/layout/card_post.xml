@@ -121,7 +121,7 @@
         android:layout_marginTop="@dimen/common_spacing"
         app:layout_constraintStart_toEndOf="@id/repost"
         app:layout_constraintTop_toTopOf="@+id/barrier2"
-        tools:text="@sample/posts.json/data/reposts"/>
+        tools:text="@sample/posts.json/data/reposts" />
 
 
     <ImageButton
