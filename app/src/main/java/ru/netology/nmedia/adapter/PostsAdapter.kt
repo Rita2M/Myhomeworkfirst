@@ -39,11 +39,9 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            countReposts.text = formatNumber(post.reposts)
-            countLikes.text = formatNumber(post.likes)
-            like.setImageResource(
-                if (post.likedByMe) R.drawable.ic_baseline_favorite_24 else R.drawable.ic_baseline_favorite_border_24
-            )
+            repost.text = formatNumber(post.reposts)
+            like.isChecked = post.likedByMe
+            like.text = formatNumber(post.likes)
             like.setOnClickListener {
                onInteractionListener.onLike(post)
             }

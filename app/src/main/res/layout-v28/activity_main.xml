@@ -22,7 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        android:outlineAmbientShadowColor="@color/red"
         app:constraint_referenced_ids="content,save"
         app:layout_constraintTop_toBottomOf="@id/toolsTopNew" />
 
