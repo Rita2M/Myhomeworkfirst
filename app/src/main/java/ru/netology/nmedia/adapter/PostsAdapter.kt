@@ -60,7 +60,7 @@ class PostViewHolder(
             val con = post.linkVideo
             if (!con.isNullOrBlank()) {
                 binding.videoContainer.visibility = View.VISIBLE
-            } else View.GONE
+            } else binding.videoContainer.visibility = View.GONE
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)
