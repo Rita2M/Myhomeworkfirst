@@ -32,4 +32,16 @@
         <item name="android:minWidth">@dimen/icon_button_min_size</item>
         <item name="android:minHeight">@dimen/icon_button_min_size</item>
     </style>
+    <style name="Widget.AppTheme.ViewsButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:minWidth">@dimen/icon_button_min_size</item>
+        <item name="android:minHeight">@dimen/icon_button_min_size</item>
+    </style>
+    <style name="Widget.AppTheme.PlayButton" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="iconTint">@color/icon_button_tint</item>
+        <item name="android:minWidth">@dimen/icon_button_min_size</item>
+        <item name="android:minHeight">@dimen/icon_button_min_size</item>
+
+    </style>
+
 </resources>

@@ -9,6 +9,9 @@
     <string name="description_post_save">Save</string>
     <string name="description_close_edit">Close edit</string>
     <string name="description_pencil">Pencil</string>
+    <string name="description_preview_video">Preview</string>
+    <string name="description_play">Play</string>
+    <string name="description_video_title">Video title</string>
     <string name="menu_remove">Remove</string>
     <string name="post_text">Post Text</string>
     <string name="menu_edit">Edit</string>

@@ -7,4 +7,5 @@
     <dimen name="icon_button_padding">12dp</dimen>
     <dimen name="icon_button_min_size">48dp</dimen>
     <dimen name="icon_button_size">24dp</dimen>
+    <dimen name="icon_button_play">96</dimen>
 </resources>

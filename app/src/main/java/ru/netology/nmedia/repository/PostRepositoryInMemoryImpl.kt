@@ -14,7 +14,9 @@ class PostRepositoryInMemoryImpl : PostRepository {
             published = "22 сентября в 10:14",
             likedByMe = false,
             repostByMe = false,
-            reposts = 0
+            reposts = 0,
+            linkVideo = "https://www.youtube.com/"
+
         ),
 
         Post(
@@ -33,7 +35,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             published = "22 сентября в 10:12",
             likedByMe = false,
             reposts = 0,
-            repostByMe = false
+            repostByMe = false,
+            linkVideo = "https://www.youtube.com/watch?v=3j-gx2NlBSI&t=891s"
         ),
         Post(
             id = nextId++,
@@ -58,7 +61,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             author = "Нетология. Университет интернет-профессий будущего",
             content = "Языков программирования много, и выбрать какой-то один бывает нелегко. Собрали подборку статей, которая поможет вам начать, если вы остановили свой выбор на JavaScript.",
             published = "19 сентября в 10:24",
-            likedByMe = false
+            likedByMe = false,
+            linkVideo = "https://www.youtube.com/watch?v=7HqTIpwypsw"
         ),
         Post(
             id = nextId++,
