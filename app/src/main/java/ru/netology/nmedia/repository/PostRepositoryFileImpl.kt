@@ -17,6 +17,7 @@ class PostRepositoryFileImpl (
     private var posts = emptyList<Post>()
         set(value){
             field = value
+            data.value = posts
             sync()
         }
     private val data = MutableLiveData(posts)
@@ -58,7 +59,6 @@ class PostRepositoryFileImpl (
                 likes = if (it.likedByMe) it.likes - 1 else it.likes + 1
             )
         }
-        data.value = posts
     }
 
     override fun repostById(id: Long) {
@@ -68,12 +68,10 @@ class PostRepositoryFileImpl (
                 repostByMe = true
             )
         }
-        data.value = posts
     }
 
     override fun removeById(id: Long) {
         posts = posts.filter { it.id != id }
-        data.value = posts
     }
     private fun sync(){
         context.openFileOutput(fileName, Context.MODE_PRIVATE).bufferedWriter().use {

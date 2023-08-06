@@ -12,11 +12,12 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.functions.formatNumber
 interface OnInteractionListener {
-    fun onLike(post: Post)
-    fun onEdit(post: Post)
-    fun onRemove(post: Post)
-    fun onRepost(post: Post)
-    fun onVideo(post: Post)
+    fun onLike(post: Post) {}
+    fun onEdit(post: Post) {}
+    fun onRemove(post: Post){}
+    fun onRepost(post: Post){}
+    fun onVideo(post: Post) {}
+    fun onPost(post: Post) {}
 }
 
 
@@ -57,6 +58,9 @@ class PostViewHolder(
             buttonPlay.setOnClickListener {
                 onInteractionListener.onVideo(post)
             }
+            root.setOnClickListener {
+                onInteractionListener.onPost(post)
+            }
             val con = post.linkVideo
             if (!con.isNullOrBlank()) {
                 binding.videoContainer.visibility = View.VISIBLE
@@ -72,6 +76,7 @@ class PostViewHolder(
                                 true
                             }
                             R.id.edit -> {
+
                                 onInteractionListener.onEdit(post)
                                 true
                             }
