@@ -40,7 +40,7 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
-            published.text = post.published
+            published.text = post.published //
             content.text = post.content
             repost.text = formatNumber(post.reposts)
             like.isChecked = post.likedByMe

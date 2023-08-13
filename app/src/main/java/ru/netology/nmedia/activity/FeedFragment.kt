@@ -62,6 +62,7 @@ class FeedFragment : Fragment() {
                 val shareIntent =
                     Intent.createChooser(intent, getString(R.string.chooser_share_post))
                 startActivity(shareIntent)
+                viewModel.repostById(post.id)
             }
 
             override fun onVideo(post: Post) {
