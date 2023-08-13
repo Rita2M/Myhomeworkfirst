@@ -127,10 +127,6 @@ class PostDaoImpl(private val db: SQLiteDatabase) : PostDao {
             """.trimIndent(), arrayOf(id)      )
     }
 
-    override fun videoById(id: Long) {
-        TODO("Not yet implemented")
-    }
-
     private fun map(cursor: Cursor): Post {
         with(cursor) {
             return Post(

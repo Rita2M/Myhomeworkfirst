@@ -8,5 +8,5 @@ interface PostDao {
     fun likeById(id: Long)
     fun removeById(id: Long)
     fun repostById(id: Long)
-    fun videoById(id: Long)
+
 }
