@@ -14,7 +14,7 @@ import android.Manifest
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 
-class AppActivity: AppCompatActivity(R.layout.activity_app) {
+class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestNotificationsPermission()
@@ -38,6 +38,7 @@ class AppActivity: AppCompatActivity(R.layout.activity_app) {
         }
         checkGoogleApiAvailability()
     }
+
     private fun checkGoogleApiAvailability() {
         with(GoogleApiAvailability.getInstance()) {
             val code = isGooglePlayServicesAvailable(this@AppActivity)
@@ -56,6 +57,7 @@ class AppActivity: AppCompatActivity(R.layout.activity_app) {
             println(it)
         }
     }
+
     private fun requestNotificationsPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return
