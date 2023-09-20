@@ -46,6 +46,7 @@ class PostViewHolder(
             like.isChecked = post.likedByMe
             like.text = formatNumber(post.likes)
             like.setOnClickListener {
+                like.isChecked = !like.isChecked
                onInteractionListener.onLike(post)
             }
             repost.setOnClickListener {
