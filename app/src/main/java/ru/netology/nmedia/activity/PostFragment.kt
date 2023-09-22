@@ -38,7 +38,7 @@ class PostFragment: Fragment() {
         )
         val postViewHolder = PostViewHolder(binding.post, object : OnInteractionListener {
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+                viewModel.likeById(post)
             }
 
             override fun onEdit(post: Post) {
@@ -75,7 +75,8 @@ class PostFragment: Fragment() {
         })
 
         viewModel.data.observe(viewLifecycleOwner) { posts ->
-            val post = posts.find{ it.id == requireArguments().postId} ?: run {
+            val post = posts.posts.find { it.id == requireArguments().postId}
+             ?: run {
                 findNavController().navigateUp()
                 return@observe
 
