@@ -11,6 +11,9 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.functions.formatNumber
+import ru.netology.nmedia.image.load
+import ru.netology.nmedia.url.UrlProvider
+
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onEdit(post: Post) {}
@@ -35,6 +38,7 @@ class PostsAdapter( private val onInteractionListener: OnInteractionListener) : 
 
 class PostViewHolder(
     private val binding: CardPostBinding,
+
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
@@ -42,6 +46,7 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published //
             content.text = post.content
+            avatar.load(UrlProvider.getAvatarUrl(post.authorAvatar))
             repost.text = formatNumber(post.reposts)
             like.isChecked = post.likedByMe
             like.text = formatNumber(post.likes)
