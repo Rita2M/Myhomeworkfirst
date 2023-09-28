@@ -9,8 +9,7 @@ import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
-import java.io.IOException
-import kotlin.concurrent.thread
+
 
 
 private val empty = Post(
@@ -20,6 +19,8 @@ private val empty = Post(
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryImpl()
+
+
     private val _data = MutableLiveData(FeedModel())
     val data: LiveData<FeedModel> get() = _data
     val edited = MutableLiveData(empty)
@@ -50,7 +51,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         repository.getAllAsync(object : PostRepository.GetAllCallback {
             override fun onSuccess(posts: List<Post>) {
                 _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
-            }
+                }
 
             override fun onError(e: Exception) {
                 _data.postValue(FeedModel(error = true))
