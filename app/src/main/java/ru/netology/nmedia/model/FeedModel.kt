@@ -8,4 +8,5 @@ data class FeedModel(
     val loading : Boolean = false,
     val empty : Boolean = posts.isEmpty(),
     val refreshing: Boolean = false,
+    val errorCRUD: Boolean = false
 )
