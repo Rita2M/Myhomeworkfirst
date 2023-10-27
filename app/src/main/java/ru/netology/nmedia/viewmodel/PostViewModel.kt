@@ -78,6 +78,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
                 override fun onError(e: Exception) {
                     _data.value = _data.value?.copy(errorCRUD = true)
+                    _data.value = FeedModel(posts = _data.value?.posts ?: emptyList())
                 }
             })
 
@@ -112,6 +113,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
                 override fun onError(e: Exception) {
                     _data.value = _data.value?.copy(errorCRUD = true)
+                    _data.value = FeedModel(posts = _data.value?.posts ?: emptyList())
                 }
             })
         } else {
@@ -127,6 +129,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
                 override fun onError(e: Exception) {
                     _data.value = _data.value?.copy(errorCRUD = true)
+                    _data.value = FeedModel(posts = _data.value?.posts ?: emptyList())
                 }
             })
         }
@@ -154,6 +157,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
             override fun onError(e: Exception) {
                 _data.value = _data.value?.copy(errorCRUD = true)
+                _data.value = FeedModel(posts = _data.value?.posts ?: emptyList())
             }
         })
     }

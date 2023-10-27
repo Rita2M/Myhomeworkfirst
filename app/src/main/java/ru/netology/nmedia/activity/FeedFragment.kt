@@ -113,6 +113,9 @@ class FeedFragment : Fragment() {
 
 
     private fun showSnackbar() {
-        Snackbar.make(requireView(), R.string.error_message, Snackbar.LENGTH_SHORT).show()
+        val addButton = requireView().findViewById<View>(R.id.add)
+        Snackbar.make(requireView(), R.string.error_message, Snackbar.LENGTH_SHORT)
+            .setAnchorView(addButton).show()
+
     }
 }
