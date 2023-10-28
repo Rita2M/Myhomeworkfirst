@@ -6,4 +6,5 @@ object UrlProvider {
     fun getAvatarUrl(authorAvatar: String) : String{
         return "${BASE_URL}/avatars/${authorAvatar}"
     }
+
 }

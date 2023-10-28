@@ -1,170 +1,137 @@
 package ru.netology.nmedia.repository
 
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import okhttp3.*
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.EMPTY_REQUEST
+import retrofit2.Call
+import retrofit2.Response
+import ru.netology.nmedia.api.PostApi
+
 import ru.netology.nmedia.dto.Post
-import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 class PostRepositoryImpl : PostRepository {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .build()
-    private val gson = Gson()
-    private val typeToken = object : TypeToken<List<Post>>() {}
 
-    companion object {
-        private const val BASE_URL = "http://10.0.2.2:9999"
-        private val jsonType = "application/json".toMediaType()
-    }
 
     override fun getAll(): List<Post> {
-        val request: Request = Request.Builder()
-            .url("${BASE_URL}/api/slow/posts")
-            .build()
 
-        return client.newCall(request)
-            .execute()
-            .let { it.body?.string() ?: throw RuntimeException("body is null") }
-            .let {
-                gson.fromJson(it, typeToken.type)
+
+        return PostApi.retrofitService.getAll().execute()
+            .let { it.body() ?: throw RuntimeException("body is null") }
+
+    }
+
+    override fun getAllAsync(callback: PostRepository.Callback<List<Post>>) {
+
+        PostApi.retrofitService.getAll().enqueue(object : retrofit2.Callback<List<Post>> {
+            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
+                if (!response.isSuccessful) {
+                    callback.onError(RuntimeException(response.errorBody()?.string()))
+                    return
+                }
+                val body = response.body() ?: run {
+                    callback.onError(RuntimeException("response is empty"))
+                    return
+                }
+                callback.onSuccess(body)
             }
-    }
 
-    override fun getAllAsync(callback: PostRepository.GetAllCallback) {
-        val request: Request = Request.Builder()
-            .url("${BASE_URL}/api/slow/posts")
-            .build()
-        client.newCall(request)
-            .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val body = response.body?.string() ?: throw RuntimeException("body is null")
-                    try {
+            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
+                callback.onError(Exception(t))
+            }
 
-                        callback.onSuccess(gson.fromJson(body, typeToken))
-                    } catch (e: Exception) {
-                        callback.onError(e)
-                    }
-                }
 
-                override fun onFailure(call: Call, e: IOException) {
-                    callback.onError(e)
-                }
-            })
+        })
     }
 
 
-    override fun saveAsync(post: Post, callback: PostRepository.SaveCallback) {
-        val request: Request = Request.Builder()
-            .post(gson.toJson(post).toRequestBody(jsonType))
-            .url("${BASE_URL}/api/slow/posts")
-            .build()
-        client.newCall(request)
-            .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    callback.onSuccess(post)
-                }
+    override fun saveAsync(post: Post, callback: PostRepository.Callback<Post>) {
+        PostApi.retrofitService.savePost(post).enqueue(object : retrofit2.Callback<Post> {
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                if (response.code() == 200) callback.onSuccess(post) else callback.onError(
+                    RuntimeException("Error in save")
+                )
+            }
 
-                override fun onFailure(call: Call, e: IOException) {
-                    callback.onError(e)
-                }
-            })
+            override fun onFailure(call: Call<Post>, t: Throwable) {
+                callback.onError(Exception(t))
+            }
+        })
 
 
     }
 
 
-    override fun likeAsync(id: Long, callback: PostRepository.LikeCallback) {
-        val request: Request = Request.Builder()
-            .post(EMPTY_REQUEST)
-            .url("${BASE_URL}/api/slow/posts/$id/likes")
-            .build()
-        client.newCall(request)
-            .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val body = response.body?.string() ?: throw RuntimeException("body is null")
-                    try {
-                        val post = gson.fromJson(body, Post::class.java)
-                        callback.onSuccess(post)
-                    } catch (e: Exception) {
-                        callback.onError(e)
-                    }
-                }
+    override fun likeAsync(id: Long, callback: PostRepository.Callback<Post>) {
 
-                override fun onFailure(call: Call, e: IOException) {
-                    callback.onError(e)
+        PostApi.retrofitService.likeById(id).enqueue(object : retrofit2.Callback<Post> {
+
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                if (!response.isSuccessful) {
+                    callback.onError(java.lang.RuntimeException(response.message()))
+                    return
                 }
-            })
+                val body = response.body() ?: run {
+                    callback.onError(RuntimeException("body is null"))
+                    return
+                }
+                callback.onSuccess(body)
+
+            }
+
+            override fun onFailure(call: Call<Post>, t: Throwable) {
+                callback.onError(Exception(t))
+            }
+        })
     }
 
 
-    override fun repostByIdAsync(id: Long, callback: PostRepository.RemoveCallback) {
-        val request: Request = Request.Builder()
-            .url("${BASE_URL}/api/slow/posts")
-            .build()
-        client.newCall(request)
-            .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        callback.onSuccess(id)
-                    } catch (e: Exception) {
-                        callback.onError(e)
-                    }
-                }
+    override fun repostByIdAsync(id: Long, callback: PostRepository.Callback<Post>) {
+//        PostApi.retrofitService.
+//            .enqueue(object : Callback {
 
-                override fun onFailure(call: Call, e: IOException) {
-                    callback.onError(e)
-                }
-            })
-    }
-
-    override fun removeByIdAsync(id: Long, callback: PostRepository.RemoveCallback) {
-        val request: Request = Request.Builder()
-            .delete()
-            .url("${BASE_URL}/api/slow/posts/$id")
-            .build()
-        client.newCall(request)
-            .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    callback.onSuccess(id)
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    callback.onError(e)
-                }
-            })
+//            })
+        //TODO
     }
 
 
-    override fun unLikeAsync(id: Long, callback: PostRepository.LikeCallback) {
-        val request: Request = Request.Builder()
-            .delete()
-            .url("${BASE_URL}/api/slow/posts/$id/likes")
-            .build()
-        client.newCall(request)
-            .enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val body = response.body?.string() ?: throw RuntimeException("body is null")
-                    try {
-                        callback.onSuccess(gson.fromJson(body, Post::class.java))
-                    } catch (e: Exception) {
-                        callback.onError(e)
-                    }
-                }
+    override fun removeByIdAsync(id: Long, callback: PostRepository.Callback<Unit>) {
+        PostApi.retrofitService.removeById(id).enqueue(object : retrofit2.Callback<Unit> {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                if (response.code() == 200) callback.onSuccess(Unit) else callback.onError(
+                    RuntimeException("Error in remove")
+                )
+            }
 
-                override fun onFailure(call: Call, e: IOException) {
-                    callback.onError(e)
-                }
-            })
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                callback.onError(Exception(t))
+            }
+
+
+        })
     }
 
+
+    override fun unLikeAsync(id: Long, callback: PostRepository.Callback<Post>) {
+        PostApi.retrofitService.dislikeById(id).enqueue(object : retrofit2.Callback<Post> {
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+
+                if (!response.isSuccessful) {
+                    callback.onError(java.lang.RuntimeException(response.message()))
+                    return
+                }
+                val body = response.body() ?: run {
+                    callback.onError(RuntimeException("body is null"))
+                    return
+                }
+
+                callback.onSuccess(body)
+            }
+
+
+            override fun onFailure(call: Call<Post>, t: Throwable) {
+                callback.onError(Exception(t))
+            }
+
+
+        })
+    }
 
 }
