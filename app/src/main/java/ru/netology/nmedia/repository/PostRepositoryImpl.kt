@@ -87,3 +87,4 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override fun repostById(id: Long) {
         dao.repostById(id)
     }
+}
