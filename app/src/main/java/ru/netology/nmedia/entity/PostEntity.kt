@@ -19,8 +19,9 @@ data class PostEntity(
     val linkVideo: String? = null
 ) {
     fun toDto() = Post(id, author, authorAvatar,content, published, likes, likedByMe )
+    //который преобразует объект PostEntity в объект Post. Этот метод используется, для преобразования данных из базы данных в формат
 
-    companion object {
+    companion object { //выполняет обратное преобразование, т.е. преобразует объект Post в объект PostEntity
         fun fromDto(dto: Post) =
             PostEntity(dto.id, dto.author,dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes)
 
