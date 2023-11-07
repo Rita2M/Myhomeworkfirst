@@ -62,6 +62,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             dao.insert(PostEntity.fromDto(body))
 
         } catch (e: IOException) {
+            dao.likeById(post.id)
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError()
