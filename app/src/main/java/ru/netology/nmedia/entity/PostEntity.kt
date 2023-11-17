@@ -16,7 +16,8 @@ data class PostEntity(
     val likes: Int = 0,
     val reposts: Int = 0,
     val repostByMe: Boolean = false,
-    val linkVideo: String? = null
+    val linkVideo: String? = null,
+    val hidden: Boolean = false
 ) {
     fun toDto() = Post(id, author, authorAvatar,content, published, likes, likedByMe )
     //который преобразует объект PostEntity в объект Post. Этот метод используется, для преобразования данных из базы данных в формат
@@ -26,4 +27,7 @@ data class PostEntity(
             PostEntity(dto.id, dto.author,dto.authorAvatar, dto.content, dto.published, dto.likedByMe, dto.likes)
 
     }
+
 }
+fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
+fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)

@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
@@ -112,6 +114,25 @@ class FeedFragment : Fragment() {
         binding.add.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
+
+        adapter.registerAdapterDataObserver(object : AdapterDataObserver(){
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0 ){
+                    binding.refreshButton.setOnClickListener {
+                        viewModel.readdd()
+                        binding.list.smoothScrollToPosition(0)
+                        binding.refreshButton.visibility = View.GONE
+                    }
+                }
+            }
+        })
+        viewModel.newerCount.observe(viewLifecycleOwner){
+            if(it >=1){
+                binding.refreshButton.visibility = View.VISIBLE
+            }
+            Log.d("FeedFragment", "Newer count : $it")
+        }
+
         return binding.root
 
 
