@@ -30,5 +30,7 @@
     <string name="empty_posts">Постов нет.\nЕсли создадите новый пост, то он появится здесь</string>
     <string name="error_loading">Что-то пошло не так. Попробуйте позднее</string>
     <string name="error_message">Произошла ошибка</string>
+    <string name="refresh_records">Свежие записи</string>
+
 
 </resources>
