@@ -5,11 +5,14 @@ import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.util.Util
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.netology.nmedia.db.AppDb
@@ -31,6 +34,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         PostRepositoryImpl(AppDb.getInstance(application).postDao())
     val data: LiveData<FeedModel> = repository.data.map {
         FeedModel(posts = it, empty = it.isEmpty())
+    }.asLiveData(Dispatchers.Default)
+    val newerCount : LiveData<Int> = data.switchMap {
+        val firstId = it.posts.firstOrNull()?.id ?: 0L
+            repository.getNewerCount(firstId).asLiveData(Dispatchers.Default)
+
     }
     private val _state = MutableLiveData(FeedModelState())
     val state: LiveData<FeedModelState>
@@ -43,7 +51,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     init {
         loadPosts()
     }
-
+  fun readdd(){
+      viewModelScope.launch{
+          repository.readAll()
+      }
+  }
     fun loadPosts() {
         viewModelScope.launch {
             _state.value = FeedModelState(loading = true)
@@ -55,6 +67,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
 
     fun refresh() {
         viewModelScope.launch {
