@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -34,12 +35,7 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            if (state.errorCRUD) {
-                showSnackbar()
 
-            }
-        }
 
         this.arguments?.textArg
             ?.let(binding.content::setText)
@@ -56,9 +52,8 @@ class NewPostFragment : Fragment() {
             viewModel.loadPosts()
             findNavController().navigateUp()
         }
+
         return binding.root
     }
-    private fun showSnackbar() {
-        Snackbar.make(requireView(), R.string.error_message, Snackbar.LENGTH_SHORT).show()
-    }
+
 }

@@ -4,9 +4,5 @@ import ru.netology.nmedia.dto.Post
 
 data class FeedModel(
     val posts : List<Post> = emptyList(),
-    val error : Boolean = false,
-    val loading : Boolean = false,
     val empty : Boolean = posts.isEmpty(),
-    val refreshing: Boolean = false,
-    val errorCRUD: Boolean = false
 )

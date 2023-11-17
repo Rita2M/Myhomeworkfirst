@@ -82,23 +82,29 @@ class FeedFragment : Fragment() {
             }
 
         })
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            if (state.errorCRUD) {
-                showSnackbar()
 
-            }
-        }
 
 
 
         binding.list.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { state ->
-
-
             adapter.submitList(state.posts)
-            binding.progress.isVisible = state.loading
-            binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
+        }
+        viewModel.state.observe(viewLifecycleOwner){ state ->
+            binding.progress.isVisible = state.loading
+            binding.swipeRefresh.isRefreshing = state.refreshing
+            if(state.error){
+                Snackbar.make(binding.root,R.string.error_loading, Snackbar.LENGTH_LONG,)
+                    .setAction(R.string.retry_loading){
+                        viewModel.loadPosts()
+                    }
+                    .show()
+            }
+
+        }
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.refresh()
         }
         binding.retryButton.setOnClickListener {
             viewModel.loadPosts()
@@ -112,10 +118,5 @@ class FeedFragment : Fragment() {
     }
 
 
-    private fun showSnackbar() {
-        val addButton = requireView().findViewById<View>(R.id.add)
-        Snackbar.make(requireView(), R.string.error_message, Snackbar.LENGTH_SHORT)
-            .setAnchorView(addButton).show()
 
-    }
 }
