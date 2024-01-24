@@ -31,6 +31,10 @@
     <string name="error_loading">Что-то пошло не так. Попробуйте позднее</string>
     <string name="error_message">Произошла ошибка</string>
     <string name="refresh_records">Свежие записи</string>
+    <string name="remove">Удалить</string>
+    <string name="description_gallery">Выбрать фото</string>
+    <string name="description_take_a_photo">Сделать фото</string>
+    <string name="description_photo">Фото</string>
 
 
 </resources>

@@ -30,5 +30,10 @@
     <string name="error_loading">Something went wrong. Try again later</string>
     <string name="error_message">An Error Has Occurred</string>
     <string name="refresh_records">Refresh records</string>
+    <string name="remove">Remove</string>
+    <string name="description_gallery">Select a photo</string>
+    <string name="description_take_a_photo">Take a photo</string>
+    <string name="description_photo">Photo</string>
+
 
 </resources>

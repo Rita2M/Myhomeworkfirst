@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="content" />
+            app:constraint_referenced_ids="photo" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/like"
@@ -170,6 +170,17 @@
             app:constraint_referenced_ids="preview,textVideo,buttonPlay">
 
         </androidx.constraintlayout.widget.Group>
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           app:layout_constraintTop_toBottomOf="@id/content"
+            tools:src="@drawable/ic_cat"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            tools:visibility= "visible"
+             />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
