@@ -15,11 +15,14 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.activity.PhotoFragment.Companion.hhh
 import ru.netology.nmedia.activity.PostFragment.Companion.postId
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
+import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
@@ -83,6 +86,13 @@ class FeedFragment : Fragment() {
                     Bundle().apply { postId = post.id })
             }
 
+            override fun onPhoto(post: Post) {
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_photoFragment,
+                    Bundle().apply { hhh = post.attachment?.url.toString() }
+                )
+            }
+
         })
 
 
@@ -93,15 +103,14 @@ class FeedFragment : Fragment() {
             adapter.submitList(state.posts)
             binding.emptyText.isVisible = state.empty
         }
-        viewModel.state.observe(viewLifecycleOwner){ state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
             binding.swipeRefresh.isRefreshing = state.refreshing
-            if(state.error){
-                Snackbar.make(binding.root,R.string.error_loading, Snackbar.LENGTH_LONG,)
-                    .setAction(R.string.retry_loading){
+            if (state.error) {
+                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.retry_loading) {
                         viewModel.loadPosts()
-                    }
-                    .show()
+                    }.show()
             }
 
         }
@@ -115,29 +124,31 @@ class FeedFragment : Fragment() {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
-        adapter.registerAdapterDataObserver(object : AdapterDataObserver(){
+        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0 ){
+                if (positionStart == 0) {
                     binding.refreshButton.setOnClickListener {
                         viewModel.readdd()
                         binding.list.smoothScrollToPosition(0)
                         binding.refreshButton.visibility = View.GONE
+
                     }
                 }
             }
         })
-        viewModel.newerCount.observe(viewLifecycleOwner){
-            if(it >=1){
+        viewModel.newerCount.observe(viewLifecycleOwner) {
+            if (it >= 1) {
                 binding.refreshButton.visibility = View.VISIBLE
             }
             Log.d("FeedFragment", "Newer count : $it")
         }
 
+
+
         return binding.root
 
 
     }
-
 
 
 }

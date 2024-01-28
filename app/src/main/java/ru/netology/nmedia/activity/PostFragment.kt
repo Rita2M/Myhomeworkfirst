@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.activity.PhotoFragment.Companion.hhh
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding
@@ -70,6 +71,12 @@ class PostFragment: Fragment() {
                 val url = Uri.parse(post.linkVideo)
                 val intent = Intent(Intent.ACTION_VIEW, url)
                 startActivity(intent)
+            }
+            override fun onPhoto(post: Post) {
+                findNavController().navigate(
+                    R.id.action_postFragment_to_photoFragment,
+                    Bundle().apply { hhh = post.attachment?.url.toString()}
+                )
             }
 
 
