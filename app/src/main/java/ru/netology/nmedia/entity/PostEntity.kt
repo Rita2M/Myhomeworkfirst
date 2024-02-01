@@ -11,6 +11,7 @@ import ru.netology.nmedia.dto.Post
 data class PostEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
+    val authorId: Long,
     val author: String,
     val authorAvatar: String,
     val content: String,
@@ -24,13 +25,14 @@ data class PostEntity(
     @Embedded
     val attachment: Attachment? = null ,
 ) {
-    fun toDto() = Post(id, author, authorAvatar, content, published, likes, likedByMe, attachment)
+    fun toDto() = Post(id,authorId, author, authorAvatar, content, published, likes, likedByMe, attachment)
     //который преобразует объект PostEntity в объект Post. Этот метод используется, для преобразования данных из базы данных в формат
 
     companion object { //выполняет обратное преобразование, т.е. преобразует объект Post в объект PostEntity
         fun fromDto(dto: Post) =
             PostEntity(
                 dto.id,
+                dto.authorId,
                 dto.author,
                 dto.authorAvatar,
                 dto.content,

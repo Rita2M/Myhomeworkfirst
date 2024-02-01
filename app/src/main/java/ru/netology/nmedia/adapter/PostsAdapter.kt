@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -54,7 +55,6 @@ class PostViewHolder(
             content.text = post.content
             avatar.load(UrlProvider.getAvatarUrl(post.authorAvatar))
             repost.text = formatNumber(post.reposts)
-            Log.d("adapter",post.toString())
             val imageUrl = post.attachment?.url
             Log.d("imageURL", "$imageUrl")
             if (imageUrl != null) {
@@ -91,6 +91,7 @@ class PostViewHolder(
             if (!con.isNullOrBlank()) {
                 binding.videoContainer.visibility = View.VISIBLE
             } else binding.videoContainer.visibility = View.GONE
+            menu.isVisible = post.ownedByMe
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)

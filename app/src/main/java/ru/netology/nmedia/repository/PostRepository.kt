@@ -16,5 +16,4 @@ interface PostRepository {
     fun repostById(id: Long)
     suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel)
 
-
 }

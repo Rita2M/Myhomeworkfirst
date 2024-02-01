@@ -35,6 +35,11 @@
     <string name="description_gallery">Выбрать фото</string>
     <string name="description_take_a_photo">Сделать фото</string>
     <string name="description_photo">Фото</string>
-
+    <string name="sign_in">Войти в систему</string>
+    <string name="sign_up">Зерегистрироваться</string>
+    <string name="sign_out">"Выйти "</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="authorization_error">"Неверный логин или пароль "</string>
 
 </resources>
