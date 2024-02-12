@@ -80,7 +80,6 @@ class AppAuth @Inject constructor(
             try {
               val pushToken = PushToken(token ?: Firebase.messaging.token.await())
                 getApiService(context).save(pushToken)
-
             }catch (e: Exception){
                 e.printStackTrace()
             }
