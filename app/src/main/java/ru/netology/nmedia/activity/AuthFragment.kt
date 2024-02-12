@@ -11,13 +11,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentAuthBinding
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.viewmodel.AuthFragmentViewModel
 
-
+@AndroidEntryPoint
 class AuthFragment : Fragment() {
     private val viewModel: AuthFragmentViewModel by viewModels()
     private var name: String = ""
@@ -43,22 +44,23 @@ class AuthFragment : Fragment() {
         }
 
         binding.login.setOnClickListener {
-            lifecycleScope.launch {
                 AndroidUtils.hideKeyboard(requireView())
-                viewModel.signIn(name, pass)
+            viewModel.signIn(name,pass)
                 viewModel.state.observe(viewLifecycleOwner) {
-                    if (it.error) {
-                        Snackbar.make(binding.root, R.string.authorization_error,Snackbar.LENGTH_LONG)
+                    if(it.error) {
+                         Snackbar.make(
+                            binding.root,
+                            R.string.authorization_error,
+                            Snackbar.LENGTH_LONG
+                        )
                             .show()
 
+                    }else if (!it.loading){
+                        findNavController().navigateUp()
                     }
                 }
-                findNavController().navigateUp()
 
             }
-
-        }
-
 
             return binding.root
         }
