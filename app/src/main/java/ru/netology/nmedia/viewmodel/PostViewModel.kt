@@ -13,9 +13,13 @@ import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.util.Util
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
@@ -29,16 +33,24 @@ import java.io.File
 
 
 private val empty = Post(
-    id = 0, content = "", author = "", likedByMe = false, published = "", authorAvatar = ""
+    id = 0, authorId = 0, content = "", author = "", likedByMe = false, published = "", authorAvatar = ""
 
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(application).postDao())
-    val data: LiveData<FeedModel> = repository.data.map {
-        FeedModel(posts = it, empty = it.isEmpty())
-    }.asLiveData(Dispatchers.Default)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val data: LiveData<FeedModel> =AppAuth.getInstance()
+        .authState
+        .flatMapLatest { auth ->  repository.data.map {posts ->
+            FeedModel(
+                posts.map { it.copy(ownedByMe = auth.id == it.authorId) },
+                posts.isEmpty()
+            )//.map(:: FeedModel)
+        }}
+        .asLiveData(Dispatchers.Default)
+
     val newerCount : LiveData<Int> = data.switchMap {
         val firstId = it.posts.firstOrNull()?.id ?: 0L
             repository.getNewerCount(firstId).asLiveData(Dispatchers.Default)

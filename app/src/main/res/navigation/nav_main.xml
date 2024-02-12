@@ -52,4 +52,11 @@
         android:name="ru.netology.nmedia.activity.PhotoFragment"
         android:label="PhotoFragment"/>
 
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="ru.netology.nmedia.activity.AuthFragment"
+        app:defaultNavHost="true"
+        android:label="AuthFragment" />
+
+
 </navigation>

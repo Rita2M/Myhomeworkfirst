@@ -34,6 +34,15 @@
     <string name="description_gallery">Select a photo</string>
     <string name="description_take_a_photo">Take a photo</string>
     <string name="description_photo">Photo</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="login">Login </string>
+    <string name="password">Password</string>
+    <string name="authorization_error">Invalid username or password</string>
+
+
+
 
 
 </resources>
