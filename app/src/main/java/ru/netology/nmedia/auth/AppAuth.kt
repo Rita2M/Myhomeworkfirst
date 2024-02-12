@@ -23,11 +23,13 @@ import javax.inject.Singleton
 
 @Singleton
 class AppAuth @Inject constructor(
-    @ApplicationContext private val context: Context) {
+    @ApplicationContext private val context: Context
+) {
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
     private val idKey = "id"
     private val tokenKey = "token"
-    private val _authState :MutableStateFlow<AuthState>
+    private val _authState: MutableStateFlow<AuthState>
+
     init {
         val id = prefs.getLong(idKey, 0)
         val token = prefs.getString(tokenKey, null)
@@ -54,8 +56,6 @@ class AppAuth @Inject constructor(
     }
 
 
-
-
     @Synchronized
     fun setAuth(id: Long, token: String) {
         _authState.value = AuthState(id, token)
@@ -66,25 +66,28 @@ class AppAuth @Inject constructor(
         }
         sendPushToken()
     }
+
     @Synchronized
-    fun removeAuth(){
+    fun removeAuth() {
         _authState.value = AuthState()
-        with(prefs.edit()){
+        with(prefs.edit()) {
             clear()
             commit()
         }
         sendPushToken()
     }
-    fun sendPushToken(token: String? = null){
+
+    fun sendPushToken(token: String? = null) {
         CoroutineScope(Dispatchers.Default).launch {
             try {
-              val pushToken = PushToken(token ?: Firebase.messaging.token.await())
+                val pushToken = PushToken(token ?: Firebase.messaging.token.await())
                 getApiService(context).save(pushToken)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
     private fun getApiService(context: Context): ApiService {
         val hiltEntryPoint = EntryPointAccessors.fromApplication(
             context,
@@ -113,7 +116,7 @@ class AppAuth @Inject constructor(
 //        }
 
 
-    }
+}
 
 
 data class AuthState(val id: Long = 0L, val token: String? = null)
