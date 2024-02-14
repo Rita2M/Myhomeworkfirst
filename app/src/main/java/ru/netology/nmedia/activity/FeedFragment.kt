@@ -14,6 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.activity.PhotoFragment.Companion.hhh
@@ -27,11 +29,11 @@ import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.viewmodel.AuthFragmentViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
-
+@AndroidEntryPoint
 class FeedFragment : Fragment() {
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
+
+    private val viewModel: PostViewModel by activityViewModels()
+
 
 
     override fun onCreateView(

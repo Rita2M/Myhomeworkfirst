@@ -7,12 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.databinding.FragmentPhotoBinding
 import ru.netology.nmedia.image.loading
 import ru.netology.nmedia.url.UrlProvider
 import ru.netology.nmedia.util.StringArg
 
-
+@AndroidEntryPoint
 class PhotoFragment : Fragment() {
     companion object {
         var Bundle.hhh: String? by StringArg
