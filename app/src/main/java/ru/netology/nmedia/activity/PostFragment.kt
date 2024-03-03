@@ -2,15 +2,27 @@ package ru.netology.nmedia.activity
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Binder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.filter
+import androidx.paging.flatMap
+import androidx.paging.map
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.activity.PhotoFragment.Companion.hhh
@@ -26,9 +38,8 @@ class PostFragment: Fragment() {
     companion object {
         var Bundle.postId: Long by LongArg
     }
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
+
+    private val viewModel: PostViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,7 +56,9 @@ class PostFragment: Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                findNavController().navigate(R.id.action_postFragment_to_editPostFragment, Bundle().apply {  textArg = post.content })
+                findNavController().navigate(
+                    R.id.action_postFragment_to_editPostFragment,
+                    Bundle().apply { textArg = post.content })
                 viewModel.edit(post)
 
 
@@ -73,37 +86,55 @@ class PostFragment: Fragment() {
                 val intent = Intent(Intent.ACTION_VIEW, url)
                 startActivity(intent)
             }
+
             override fun onPhoto(post: Post) {
                 findNavController().navigate(
                     R.id.action_postFragment_to_photoFragment,
-                    Bundle().apply { hhh = post.attachment?.url.toString()}
+                    Bundle().apply { hhh = post.attachment?.url.toString() }
                 )
             }
 
 
         })
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            if (state.error) {
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG,)
-                    .setAction(R.string.retry_loading) {
-                        viewModel.loadPosts()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.data.collect {
+
+                it.map { post ->
+                    if (post.id == requireArguments().postId) {
+                        postViewHolder.bind(post)
+                        Log.d("PostFragment", post.toString())
                     }
-                    .show()
+
+                }
+
+
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            val post = posts.posts.find { it.id == requireArguments().postId}
-             ?: run {
-                findNavController().navigateUp()
-                return@observe
-
+            viewModel.state.observe(viewLifecycleOwner) { state ->
+                if (state.error) {
+                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.retry_loading) {
+                            viewModel.loadPosts()
+                        }
+                        .show()
+                }
             }
-            postViewHolder.bind(post)
-
-        }
 
 
-        return binding.root
+//        viewModel.data.observe(viewLifecycleOwner) { posts ->
+//            val post = posts.posts.find { it.id == requireArguments().postId}
+//             ?: run {
+//                findNavController().navigateUp()
+//                return@observe
+//
+//            }
+//            postViewHolder.bind(post)
+//
+//        }
+
+
+            return binding.root
+
     }
 }

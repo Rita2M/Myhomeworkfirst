@@ -4,21 +4,20 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.error.ApiError
-import ru.netology.nmedia.error.AppError
-import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.repository.PostRepository
@@ -38,21 +37,20 @@ class PostViewModel @Inject constructor(
     private val postRepository: PostRepository,
       appAuth: AppAuth,
 ) : ViewModel() {
-    val data: LiveData<FeedModel> = appAuth
+    val data: Flow<PagingData<Post>> = appAuth
         .authState
         .flatMapLatest { auth ->  postRepository.data.map {posts ->
-            FeedModel(
-                posts.map { it.copy(ownedByMe = auth.id == it.authorId) },
-                posts.isEmpty()
-            )
+                posts.map { it.copy(ownedByMe = auth.id == it.authorId) }
+
         }}
-        .asLiveData(Dispatchers.Default)
+        .flowOn(Dispatchers.Default)
 
-    val newerCount : LiveData<Int> = data.switchMap {
-        val firstId = it.posts.firstOrNull()?.id ?: 0L
-            postRepository.getNewerCount(firstId).asLiveData(Dispatchers.Default)
 
-    }
+//    val newerCount : Flow<Int> = data.mapLatest {
+//        val firstId = it. ?: 0L
+//            postRepository.getNewerCount(firstId).flowOn(Dispatchers.Default)
+//
+//    }
     private val _photo = MutableLiveData<PhotoModel?>(null)
     val photo : LiveData<PhotoModel?>
         get() = _photo
@@ -86,6 +84,7 @@ class PostViewModel @Inject constructor(
             }
         }
     }
+
 
 
     fun refresh() {
