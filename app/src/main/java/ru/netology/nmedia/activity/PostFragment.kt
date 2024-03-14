@@ -2,7 +2,6 @@ package ru.netology.nmedia.activity
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Binder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,18 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.filter
-import androidx.paging.flatMap
 import androidx.paging.map
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
@@ -97,8 +89,7 @@ class PostFragment: Fragment() {
 
         })
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.data.collect {
-
+                    viewModel.data.collect {
                 it.map { post ->
                     if (post.id == requireArguments().postId) {
                         postViewHolder.bind(post)
@@ -115,7 +106,7 @@ class PostFragment: Fragment() {
                 if (state.error) {
                     Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
                         .setAction(R.string.retry_loading) {
-                            viewModel.loadPosts()
+                            viewModel.data
                         }
                         .show()
                 }

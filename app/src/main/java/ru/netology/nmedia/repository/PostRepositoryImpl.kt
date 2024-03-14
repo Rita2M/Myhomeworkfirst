@@ -1,18 +1,23 @@
 package ru.netology.nmedia.repository
 
 
-
 import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.filter
+import androidx.paging.map
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.mapNotNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
@@ -21,7 +26,6 @@ import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Media
-
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.toEntity
@@ -32,13 +36,12 @@ import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.log
 
 @Singleton
 class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
-    private val  apiService: ApiService,
-    private val appAuth: AppAuth
+    private val apiService: ApiService,
+    private val appAuth: AppAuth,
 ) : PostRepository {
     override val data = Pager(
         config = PagingConfig(pageSize = 10, enablePlaceholders = false),
@@ -48,17 +51,14 @@ class PostRepositoryImpl @Inject constructor(
             )
         }
     ).flow
-//    override val data: Flow<List<Post>> = dao.getAll()
-//        .map {
-//            it.map(PostEntity::toDto)
-//        }.flowOn(Dispatchers.Default)
 
-    override fun getNewerCount(postId: Long): Flow<Int> =
+
+    override suspend fun getNewerCount(postId: Long): Flow<Int> =
         flow {
             while (true) {
                 try {
                     delay(10_000)
-                    val postsResponse = apiService.getNever(postId)
+                    val postsResponse = apiService.getNewerCount(postId)
 
                     val body = postsResponse.body().orEmpty()
                     val post = dao.getById(postId)
@@ -85,20 +85,6 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getAll() {
-        val postsResponse = apiService.getAll()
-        if (!postsResponse.isSuccessful) {
-            throw RuntimeException(postsResponse.errorBody()?.toString())
-        }
-        val posts = postsResponse.body() ?: throw java.lang.RuntimeException("body is null")
-
-
-         dao.insert(posts.map(PostEntity::fromDto))
-
-
-
-
-    }
 
     override suspend fun save(post: Post) {
         try {
@@ -126,7 +112,7 @@ class PostRepositoryImpl @Inject constructor(
             } else {
                 apiService.likeById(post.id)
             }
-            Log.d("repositLike","${postLikeResponse.body()}" )
+            Log.d("repositLike", "${postLikeResponse.body()}")
             if (!postLikeResponse.isSuccessful) {
                 throw ApiError(postLikeResponse.code(), postLikeResponse.message())
             }
@@ -137,7 +123,7 @@ class PostRepositoryImpl @Inject constructor(
             dao.insert(PostEntity.fromDto(body))
 
         } catch (e: IOException) {
-           // dao.likeById(post.id)
+            // dao.likeById(post.id)
             throw NetworkError
         } catch (e: Exception) {
             e.printStackTrace()
@@ -209,8 +195,8 @@ class PostRepositoryImpl @Inject constructor(
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-                val body = response.body() ?: throw ApiError(response.code(), response.message())
-                appAuth.setAuth(body.id, body.token)
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            appAuth.setAuth(body.id, body.token)
 
         } catch (e: RuntimeException) {
             throw java.lang.RuntimeException(e)

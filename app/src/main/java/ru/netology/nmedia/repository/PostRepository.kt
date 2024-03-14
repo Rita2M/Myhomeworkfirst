@@ -8,8 +8,7 @@ import ru.netology.nmedia.model.PhotoModel
 
 interface PostRepository {
     val data : Flow<PagingData<Post>>
-    fun getNewerCount(postId: Long) : Flow<Int>
-    suspend fun getAll()
+    suspend fun getNewerCount(postId: Long) : Flow<Int>
     suspend fun save(post: Post)
     suspend fun likeById(post: Post)
     suspend fun readAll()

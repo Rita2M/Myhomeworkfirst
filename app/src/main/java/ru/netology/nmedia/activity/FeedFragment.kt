@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.log
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -25,13 +28,14 @@ import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by activityViewModels()
-
+    private val authViewModel: AuthViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -48,6 +52,7 @@ class FeedFragment : Fragment() {
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
                 viewModel.likeById(post)
+
 
             }
 
@@ -104,24 +109,10 @@ class FeedFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.data.collectLatest(adapter :: submitData)
+                viewModel.data.collectLatest(adapter::submitData)
             }
         }
-//        viewModel.data.observe(viewLifecycleOwner) { state ->
-//            adapter.submitList(state.posts)
-//            binding.emptyText.isVisible = state.empty
-//        }
-//        viewModel.state.observe(viewLifecycleOwner) { state ->
-//            binding.progress.isVisible = state.loading
-//            binding.swipeRefresh.isRefreshing = state.refreshing
-//            if (state.error) {
-//                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-//                    .setAction(R.string.retry_loading) {
-//                        viewModel.loadPosts()
-//                    }.show()
-//            }
-//
-//        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.collectLatest { state ->
@@ -133,20 +124,27 @@ class FeedFragment : Fragment() {
             }
         }
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refresh()
+            adapter.refresh()
         }
         binding.retryButton.setOnClickListener {
-            viewModel.loadPosts()
+            adapter.refresh()
         }
         binding.add.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
+        authViewModel.data.observe(viewLifecycleOwner){
+            adapter.refresh()
+        }
+
+
 
         adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
                     binding.refreshButton.setOnClickListener {
+                        Log.d("FeedFragment", "Newer count : $itemCount")
                         viewModel.readdd()
+                        adapter.refresh()
                         binding.list.smoothScrollToPosition(0)
                         binding.refreshButton.visibility = View.GONE
 
@@ -154,13 +152,16 @@ class FeedFragment : Fragment() {
                 }
             }
         })
-//        viewModel.newerCount.observe(viewLifecycleOwner) {
+
+
+//        viewModel.getNewer.observe(viewLifecycleOwner) {
 //            if (it >= 1) {
 //                binding.refreshButton.visibility = View.VISIBLE
 //            }
 //            Log.d("FeedFragment", "Newer count : $it")
 //        }
 
+        Log.d("FeedFragment", "Newer count : ${adapter.itemCount}")
 
 
         return binding.root

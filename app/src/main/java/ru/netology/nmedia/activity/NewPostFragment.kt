@@ -63,7 +63,7 @@ class NewPostFragment : Fragment() {
                     R.id.save -> {
                         viewModel.changeContent(binding.edit.text.toString())
                         viewModel.save()
-                        viewModel.refresh()
+                       // viewModel.data
                         AndroidUtils.hideKeyboard(requireView())
                         true
                     }
@@ -114,7 +114,7 @@ class NewPostFragment : Fragment() {
         }
 
         viewModel.postCreated.observe(viewLifecycleOwner) {
-            viewModel.loadPosts()
+            viewModel.data
             findNavController().navigateUp()
         }
 
