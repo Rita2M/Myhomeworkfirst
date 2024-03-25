@@ -107,6 +107,7 @@ class FeedFragment : Fragment() {
 
         binding.list.adapter = adapter
 
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest(adapter::submitData)
@@ -120,20 +121,23 @@ class FeedFragment : Fragment() {
                         state.refresh is LoadState.Loading ||
                                 state.prepend is LoadState.Loading ||
                                 state.append is LoadState.Loading
+                    binding.list.smoothScrollToPosition(0)
+
                 }
             }
         }
-        binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
-        }
+        binding.swipeRefresh.setOnRefreshListener(
+            adapter::refresh)
         binding.retryButton.setOnClickListener {
             adapter.refresh()
+            binding.list.smoothScrollToPosition(0)
         }
         binding.add.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
         authViewModel.data.observe(viewLifecycleOwner){
             adapter.refresh()
+
         }
 
 
@@ -143,7 +147,7 @@ class FeedFragment : Fragment() {
                 if (positionStart == 0) {
                     binding.refreshButton.setOnClickListener {
                         Log.d("FeedFragment", "Newer count : $itemCount")
-                        viewModel.readdd()
+                            // viewModel.readdd()
                         adapter.refresh()
                         binding.list.smoothScrollToPosition(0)
                         binding.refreshButton.visibility = View.GONE
