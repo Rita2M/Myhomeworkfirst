@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.netology.nmedia.auth.AppAuth
@@ -35,7 +36,7 @@ private val empty = Post(
 
 )
 
-@OptIn(ExperimentalCoroutinesApi::class)
+//@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val postRepository: PostRepository,
@@ -58,12 +59,27 @@ class PostViewModel @Inject constructor(
     fun setPhoto(uri: Uri, file: File) {
         _photo.value = PhotoModel(uri, file)
     }
+//    init {
+//        loadPosts()
+//    }
+//    private fun reed(){
+//        viewModelScope.launch {
+//            postRepository.readAll()
+//        }
+//    }
+//private fun loadPosts() = viewModelScope.launch {
+//    try {
+//        _state.value = FeedModelState(loading = true)
+//        postRepository.data.collectLatest {
+//            _state.value = FeedModelState()
+//        }
+//        _state.value = FeedModelState()
+//    } catch (e: Exception) {
+//        _state.value = FeedModelState(error = true)
+//    }
+//}
 
-    fun readdd() {
-        viewModelScope.launch {
-            postRepository.readAll()
-        }
-    }
+
 
 
     fun save() {
@@ -105,6 +121,7 @@ class PostViewModel @Inject constructor(
     fun edit(post: Post) {
         edited.value = post
     }
+
 
     fun likeById(post: Post) {
         viewModelScope.launch {
