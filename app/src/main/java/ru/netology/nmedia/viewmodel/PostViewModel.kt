@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
@@ -42,7 +43,7 @@ class PostViewModel @Inject constructor(
     private val postRepository: PostRepository,
     appAuth: AppAuth,
 ) : ViewModel() {
-    val data: Flow<PagingData<Post>> = postRepository
+    val data: Flow<PagingData<FeedItem>> = postRepository
         .data.cachedIn(viewModelScope)
 
     private val _photo = MutableLiveData<PhotoModel?>(null)
