@@ -6,11 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import dagger.Provides
 import ru.netology.nmedia.dao.PostDao
+import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.entity.PostRemoteKeyEntity
 
-@Database(entities = [PostEntity::class], version = 2, exportSchema = false)
+@Database(entities = [PostEntity::class, PostRemoteKeyEntity:: class], version = 2, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
-    abstract fun postDao(): PostDao}
+    abstract fun postDao(): PostDao
+    abstract fun postRemoteKeyDao(): PostRemoteKeyDao
+}
 
 
 //    companion object {

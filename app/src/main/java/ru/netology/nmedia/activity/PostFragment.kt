@@ -90,13 +90,6 @@ class PostFragment: Fragment() {
         })
         viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.data.collect {
-                it.map { post ->
-                    if (post.id == requireArguments().postId) {
-                        postViewHolder.bind(post)
-                        Log.d("PostFragment", post.toString())
-                    }
-
-                }
 
 
             }
