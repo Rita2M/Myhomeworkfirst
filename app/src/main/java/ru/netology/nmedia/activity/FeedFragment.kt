@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -15,6 +16,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.LoadType
+import androidx.paging.PagingSource
 import androidx.paging.log
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +28,7 @@ import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.activity.PhotoFragment.Companion.hhh
 import ru.netology.nmedia.activity.PostFragment.Companion.postId
 import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PostLoadingStateAdaptor
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
@@ -105,9 +109,40 @@ class FeedFragment : Fragment() {
 
 
 
-        binding.list.adapter = adapter
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PostLoadingStateAdaptor(
+                retryListener = { adapter.retry() },
+            ),
+            footer = PostLoadingStateAdaptor(
+
+                retryListener = { adapter.retry() },
 
 
+                )
+        )
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collectLatest { state ->
+                    when {
+                        state.append is LoadState.Loading -> {
+                            binding.progress.isVisible
+                            binding.list.adapter = adapter.withLoadStateFooter(
+                                PostLoadingStateAdaptor { adapter.retry() }
+                            )
+
+                        }
+
+                        state.prepend is LoadState.Loading -> {
+                            binding.progress.isVisible
+                            binding.list.adapter = adapter.withLoadStateHeader(
+                                PostLoadingStateAdaptor { adapter.retry() }
+                            )
+                        }
+
+                    }
+                }
+            }
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest(adapter::submitData)
@@ -118,24 +153,17 @@ class FeedFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.collectLatest { state ->
                     binding.swipeRefresh.isRefreshing =
-                        state.refresh is LoadState.Loading ||
-                                state.prepend is LoadState.Loading ||
-                                state.append is LoadState.Loading
-                    binding.list.smoothScrollToPosition(0)
-
+                        state.refresh is LoadState.Loading
                 }
             }
         }
         binding.swipeRefresh.setOnRefreshListener(
-            adapter::refresh)
-        binding.retryButton.setOnClickListener {
-            adapter.refresh()
-            binding.list.smoothScrollToPosition(0)
-        }
+            adapter::refresh
+        )
         binding.add.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
-        authViewModel.data.observe(viewLifecycleOwner){
+        authViewModel.data.observe(viewLifecycleOwner) {
             adapter.refresh()
 
         }
@@ -147,7 +175,7 @@ class FeedFragment : Fragment() {
                 if (positionStart == 0) {
                     binding.refreshButton.setOnClickListener {
                         Log.d("FeedFragment", "Newer count : $itemCount")
-                            // viewModel.readdd()
+                        // viewModel.readdd()
                         adapter.refresh()
                         binding.list.smoothScrollToPosition(0)
                         binding.refreshButton.visibility = View.GONE
