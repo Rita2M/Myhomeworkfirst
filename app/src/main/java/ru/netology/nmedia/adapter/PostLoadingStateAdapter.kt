@@ -5,12 +5,10 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
-import androidx.paging.LoadType
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import ru.netology.nmedia.databinding.ItemLoadingBinding
 
-class PostLoadingStateAdaptor(
+class PostLoadingStateAdapter(
     private val retryListener: () -> Unit,
 
 
@@ -39,6 +37,7 @@ class PostLoadingViewHolder(
             retryButton.setOnClickListener {
                 retryListener()
             }
+
         }
     }
 
